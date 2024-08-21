@@ -4,6 +4,7 @@ import axios from 'axios'
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const sendWithAxiosNoCode = async (rota:string, method:string, payload?:any, header?:any) => {
   const APINOCODEURL = process.env.REACT_APP_APINOCODEURL
+  console.log('-----', APINOCODEURL)
     const result = await axios({
       url: APINOCODEURL+"/"+rota,
       method: method,
@@ -14,6 +15,7 @@ export const sendWithAxiosNoCode = async (rota:string, method:string, payload?:a
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const sendWithAxios = async (rota:string, method:string, payload?:any) => {
   const APIURL = process.env.REACT_APP_APIURL
+  console.log('-----', APIURL)
   const token = sessionStorage.getItem('tokenHello')
     const result = await axios({
       url: APIURL+"/"+rota,

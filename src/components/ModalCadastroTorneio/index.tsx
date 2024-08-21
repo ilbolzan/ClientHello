@@ -5,29 +5,26 @@ import { useAlert } from '../../hooks/useAlert'
 import { useBackdrop } from '../../hooks/useBackdrop'
 import * as api from '../../sevices'
 import './style.scss'
+import { TournamentType } from '../../types/useMatch'
 
 type ModalCadastroTorneioType = {
   close: () => void
   open: boolean
 }
 
-type MyFormValues = {
-  title: string
-}
-
 function ModalCadastroTorneio({ open, close }: ModalCadastroTorneioType) {
   const navigate = useNavigate()
   const { setupMessage } = useAlert()
   const { setupClose, setupOpen } = useBackdrop()
-  const initialValues: MyFormValues = { title: '' }
+  const initialValues: TournamentType = { title: '', createdAt: new Date() }
 
   const handleSubmit = async (
-    values: MyFormValues,
-    { setSubmitting }: FormikHelpers<MyFormValues>
+    values: TournamentType,
+    { setSubmitting }: FormikHelpers<TournamentType>
   ) => {
     try {
       setupOpen()
-      await api.postTorunaments(values)
+      await api.postTournaments(values)
 
       navigate('/load')
       setSubmitting(false)

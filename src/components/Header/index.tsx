@@ -11,10 +11,11 @@ function Header() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!getToken()) {
-      navigate('/login')
-      setLoged(false)
-    } else setLoged(true)
+    // if (!getToken()) {
+    //   navigate('/login')
+    //   setLoged(false)
+    // } else setLoged(true)
+    setLoged(true)
   }, [user])
 
   return (

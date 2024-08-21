@@ -1,4 +1,4 @@
-export type MatchType = {
+export interface MatchType {
   id: string;
   category: string;
   runnerA: RacerType;
@@ -6,31 +6,29 @@ export type MatchType = {
   tournament: string;
   winner: string;
 };
-export type RacerType = {
-  id: string | null;
+export interface RacerType {
+  id?: string;
   name: string;
-  average_speed: number;
-  wos: number;
-  times_played: number;
-  victories: number;
-  category: string;
-  tournament?: string | undefined;
-  dead: boolean;
-  key?: string | undefined;
+  average_speed?: number;
+  wos?: number;
+  times_played?: number;
+  victories?: number;
+  category?: string;
+  tournament?: string;
+  dead?: boolean;
+  key?: string;
 };
-export type TournamentType = {
-  id: number;
-  title: string;
-  name: string; //delete
-  createdAt: string;
-  updatedAt: string;
-  date: string; // delete
-  racers: RacerType[];
+export interface TournamentType {
+  id?: string;
+  title?: string;
+  createdAt: Date;
+  updatedAt?: Date;
+  racers?: RacerType[];
 };
-export type KeysType = {
+export interface KeysType {
   category: string;
-  current_race: string;
-  current_round: string;
-  graph: MatchType[][];
+  current_race?: string;
+  current_round?: string;
+  graph?: MatchType[][];
   tournament: string;
 };

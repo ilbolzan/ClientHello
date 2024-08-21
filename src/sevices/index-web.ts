@@ -1,14 +1,15 @@
-import { PersistentCollection } from "signaldb"
-import { RacerType, TournamentType } from '../types/useMatch';
 import * as apiConfig from "./apiConfig";
-import { v4 as uuidv4 } from 'uuid';
-
-
-const tournamentsDb = new PersistentCollection("tournaments");
 
 type CredentialsType = {
   email: string;
   password: string;
+};
+type TorneioCreateType = {
+  title: string;
+};
+type PlayerCreateType = {
+  name: string;
+  category: string;
 };
 type PlayerDeleteType = {
   key: string;
@@ -30,65 +31,69 @@ export const login = async ({ email, password }: CredentialsType) => {
     throw new Error("erro ao logar");
   }
 };
-export const getTournaments = async (): Promise<TournamentType> => {
+export const getTorunaments = async () => {
+  const response = await apiConfig.sendWithAxiosNoCode(
+    "r2mvt1f6wludndkivtq06upimbz97aah",
+    "GET"
+  );
+  return response.data;
+};
+export const getTorunament = async (id: string) => {
   try {
-    const cursor = tournamentsDb.find({});
-    const response = cursor.fetch();
-    console.log(response);
-    return response as TournamentType[];
-  } catch (e: any) {
-    console.log(e);
+    const response = await apiConfig.sendWithAxiosNoCode(
+      `r2mvt1f6wludndkivtq06upimbz97aah/${id}`,
+      "GET"
+    );
+    return response.data;
+  } catch {
     throw new Error("erro ao obter torneios");
   }
 };
-export const getTournament = async (id: string): Promise<TournamentType> => {
+export const postTorunaments = async (dataTournament: TorneioCreateType) => {
   try {
-    const response = tournamentsDb.findOne({id});
-    console.log(response);
-    return response
-  } catch (e: any) {
-    console.log(e);
-    throw new Error(`erro ao obter torneio [${id}]`);
-  }
-};
-export const postTournaments = async (dataTournament: TournamentType) => {
-  try {
-    dataTournament.createdAt = new Date();
-    dataTournament.racers = [];
-    console.log(dataTournament);
-    return await tournamentsDb.insert(dataTournament);
-  } catch (e: any) {
-    console.log(e);
+    const response = await apiConfig.sendWithAxiosNoCode(
+      "r2mvt1f6wludndkivtq06upimbz97aah",
+      "POST",
+      dataTournament
+    );
+    return response.data;
+  } catch {
     throw new Error("erro ao criar torneio");
   }
 };
-export const deletTournaments = async (id: string) => {
+export const deletTorunaments = async (id: string) => {
   try {
-    return await tournamentsDb.removeOne({id});
-  } catch (e: any) {
-    console.log(e);
-    throw new Error("erro ao criar torneio");
+    const response = await apiConfig.sendWithAxiosNoCode(
+      "r2mvt1f6wludndkivtq06upimbz97aah",
+      "DELETE",
+      { key: id },
+      { tournament: id }
+    );
+    return response.data;
+  } catch {
+    throw new Error("erro ao deletar torneio");
   }
 };
 
-export const postPlayer = async (dataPlayer: RacerType, tournmentId: string) => {
+export const postPlayer = async (dataPlayer: PlayerCreateType, id: string) => {
   try {
-    dataPlayer.id = uuidv4();
-    const savedTournment =  tournamentsDb.updateOne({id: tournmentId}, { $push: {racers: dataPlayer}})
-    console.log(savedTournment);
-    return savedTournment;
-  } catch (e: any) {
-    console.log(e);
+    const response = await apiConfig.sendWithAxios(
+      "racers",
+      "POST",
+      { ...dataPlayer, TournamentId: id },
+    );
+    return response.data;
+  } catch {
     throw new Error("erro ao criar jogador");
   }
 };
-export const putPlayer = async (dataPlayer: RacerType, tournmentId: string) => {
+export const putPlayer = async (dataPlayer: PlayerCreateType, id: string) => {
   try {
     const response = await apiConfig.sendWithAxiosNoCode(
       "92lifkj4demkm16tk5jc3vaj78pdmawx",
       "PUT",
       { player: dataPlayer },
-      { tournament: tournmentId }
+      { tournament: id }
     );
     return response.data;
   } catch {
@@ -96,17 +101,19 @@ export const putPlayer = async (dataPlayer: RacerType, tournmentId: string) => {
   }
 };
 export const deletePlayer = async (
-  dataPlayer: RacerType,
-  tournmentId: string
+  dataPlayer: PlayerDeleteType,
+  id: string
 ) => {
   try {
-    console.log(dataPlayer);
-    const savedTournment =  tournamentsDb.updateOne({id: tournmentId}, { $pull: {racers: {id: dataPlayer.id}}})
-    console.log(savedTournment);
-    return savedTournment;
-  } catch (e: any) {
-    console.log(e);
-    throw new Error("erro ao deleter jogador");
+    const response = await apiConfig.sendWithAxiosNoCode(
+      "92lifkj4demkm16tk5jc3vaj78pdmawx?player=" + dataPlayer.key,
+      "DELETE",
+      null,
+      { tournament: id }
+    );
+    return response.data;
+  } catch {
+    throw new Error("erro ao deletar jogador");
   }
 };
 export const getTournamentKeys = async (id: string, category: string) => {
@@ -177,7 +184,7 @@ export const getRacer = async (racer: string, id: string) => {
 };
 
 export const putPlayers = async (
-  dataPlayer: RacerType[],
+  dataPlayer: PlayerCreateType[],
   id: string
 ) => {
   try {

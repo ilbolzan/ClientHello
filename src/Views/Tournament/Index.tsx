@@ -42,7 +42,7 @@ function Tournament() {
   const getTournament = async () => {
     try {
       setBackdropStatus(true)
-      const tournament = await api.getTorunament(id || '')
+      const tournament = await api.getTournament(id)
       setupTournament(tournament)
       setupPlayers(tournament.racers)
       setSemPlayers(
@@ -60,7 +60,8 @@ function Tournament() {
           (player: ReacersType) => player.category === 'mas'
         )
       )
-    } catch {
+    } catch (e: any) {
+      console.log(e);
       setMessageStatus('Erro ao carregar torneios')
     } finally {
       setBackdropStatus(false)
@@ -91,7 +92,7 @@ function Tournament() {
   const handleDeleteTournament = async () => {
     try {
       setBackdropStatus(true)
-      await api.deletTorunaments(id || '')
+      await api.deletTournaments(id || '')
       navigate('/load')
     } catch {
       setMessageStatus('Erro ao deletar torneios')
@@ -173,7 +174,7 @@ function Tournament() {
           <header>
             <section className="small">
               <h2>{tournament.title}</h2>
-              <span>{new Date(tournament.createdAt).toLocaleDateString()}</span>
+              <span>{(tournament.createdAt instanceof Date ? tournament.createdAt : new Date(tournament.createdAt)).toLocaleDateString()}</span>
             </section>
             <nav>
               <div

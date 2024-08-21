@@ -27,11 +27,12 @@ function Load() {
   const getTournaments = async () => {
     try {
       setBackdropStatus(true)
-      const tournaments = await api.getTorunaments()
+      const tournaments = await api.getTournaments()
       setTournaments(tournaments)
       setTournamentsToShow(tournaments)
       setSearch('')
-    } catch {
+    } catch (e: any) {
+      console.log(e);
       setMessageStatus('Erro ao carregar torneios')
     } finally {
       setBackdropStatus(false)
